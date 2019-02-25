@@ -1,5 +1,6 @@
 import json
 import os
+import copy
 import random
 import bottle
 
@@ -30,6 +31,17 @@ def ping():
     """
     return ping_response()
 
+
+BOARD_KEY = "board"
+YOU_KEY = "you"
+SNAKES_KEY = "snakes"
+BODY_KEY = "body"
+FOOD_KEY = "food"
+HEIGHT_KEY = "height"
+WIDTH_KEY = "width"
+
+
+
 @bottle.post('/start')
 def start():
     data = bottle.request.json
@@ -41,9 +53,100 @@ def start():
     """
     print(json.dumps(data))
 
+    BOARD_HEIGHT = data[BOARD_KEY][HEIGHT_KEY]
+    BOARD_WIDTH = data[BOARD_KEY][WIDTH_KEY]
+    print(BOARD_WIDTH)
+
     color = "#00FF00"
 
     return start_response(color)
+
+direction_map_x = {
+  'up' : 0,
+  'down' : 0,
+  'left' : -1,
+  'right' : 1
+ }
+
+direction_map_y = {
+  'up' : -1,
+  'down' : 1,
+  'left' : 0,
+  'right' : 0
+ }
+
+def get_current_location(data):
+    return data[YOU_KEY][BODY_KEY][0]
+
+
+def in_board(xy, data):
+    
+    BOARD_HEIGHT = data[BOARD_KEY][HEIGHT_KEY]
+    BOARD_WIDTH = data[BOARD_KEY][WIDTH_KEY]
+    print(BOARD_WIDTH)
+    print(BOARD_HEIGHT)
+    if xy['x'] >= BOARD_WIDTH or xy['x'] < 0:
+        return False
+    elif xy['y'] >= BOARD_HEIGHT or xy['y'] < 0:
+        return False
+       
+    return True
+
+def get_action_xy(action, data):
+
+    xy = get_current_location(data)
+    next_xy = {
+        'x': xy['x'] + direction_map_x[action],
+	'y': xy['y'] + direction_map_y[action]
+    }
+
+    return next_xy
+
+def is_valid_action(action, data):
+
+    current_xy = get_current_location(data)
+    print('Currently at %s' % str(current_xy))
+    
+    # Check if the action moves you off the board
+    new_xy = get_action_xy(action, data)
+    print('action : %s moves you to %s' % (action, str(new_xy) ))
+
+    if not in_board(new_xy, data):
+        print('Not in board')
+        return False
+
+    # Check if you will hit another snake
+    snake_bodies = []
+    try:
+        snakes = data[BOARD_KEY][SNAKES_KEY]
+
+        snakes_bodies = [ snake_xy for snake in snakes for snake_xy in snake[BODY_KEY] ]
+        print("Snakes Bodies")
+        print(snakes_bodies)
+
+    except KeyError as e:
+        print(e)
+
+
+    # Check if you will self-collide
+    your_bodies = []
+    try:
+        you = data[YOU_KEY]
+
+        your_bodies = [ you_xy for you_xy in you[BODY_KEY] ]
+        print("Your Bodies")
+        print(your_bodies)
+
+    except KeyError as e:
+        print(e)
+
+    if new_xy in snakes_bodies or new_xy in your_bodies:
+        print('Theres a snake in this boot')
+        return False
+
+
+    return True
+
 
 
 @bottle.post('/move')
@@ -57,6 +160,9 @@ def move():
     print(json.dumps(data))
 
     directions = ['up', 'down', 'left', 'right']
+
+    directions = [ d for d in directions if is_valid_action(d,data) ]
+
     direction = random.choice(directions)
 
     return move_response(direction)
