@@ -57,7 +57,7 @@ def start():
     BOARD_WIDTH = data[BOARD_KEY][WIDTH_KEY]
     print(BOARD_WIDTH)
 
-    color = "#00FF00"
+    color = "#342D7E"
 
     return start_response(color)
 
@@ -120,7 +120,8 @@ def is_valid_action(action, data):
     try:
         snakes = data[BOARD_KEY][SNAKES_KEY]
 
-        snakes_bodies = [ snake_xy for snake in snakes for snake_xy in snake[BODY_KEY] ]
+        snakes_bodies = [ snake_xy for snake in snakes for snake_xy in snake[BODY_KEY][:-1] ]
+
         print("Snakes Bodies")
         print(snakes_bodies)
 
