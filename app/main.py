@@ -10,16 +10,15 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,currentdir)
 sys.path.insert(0,parentdir)
 
-
 from api import ping_response, start_response, move_response, end_response
 
-from alpha_snake import Battlesnake
+# from alpha_snake import Battlesnake
 
 
 class App():
 
     def __init__(self):
-        self.battlesnake = Battlesnake()
+        # self.battlesnake = Battlesnake()
 
     def run(self):
         bottle.run(
@@ -62,9 +61,9 @@ class App():
         """
         print(json.dumps(data))
         
-        self.battlesnake.start(data)
-        print("Snek Started")
-        action, _, _, _ =  self.battlesnake.act(data)
+        # self.battlesnake.start(data)
+        # print("Snek Started")
+        # action, _, _, _ =  self.battlesnake.act(data)
 
 
         color = "#342D7E"
@@ -80,15 +79,16 @@ class App():
                 snake AI must choose a direction to move in.
         """
         print(json.dumps(data))
+        return 'up'
 
-        directions = ['up', 'down', 'left', 'right']
+        # directions = ['up', 'down', 'left', 'right']
 
-        action, _, _, _ =  self.battlesnake.act(data)
+        # action, _, _, _ =  self.battlesnake.act(data)
 
-        direction = directions[0]#action]
-        print(direction)
+        # direction = directions[0]#action]
+        # print(direction)
 
-        return move_response(direction)
+        # return move_response(direction)
 
 
     def end(self):
