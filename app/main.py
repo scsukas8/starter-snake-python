@@ -18,6 +18,7 @@ from api import ping_response, start_response, move_response, end_response
 class App():
 
     def __init__(self):
+        pass
         # self.battlesnake = Battlesnake()
 
     def run(self):
