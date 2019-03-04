@@ -1,8 +1,6 @@
 import numpy as np
 import random
 
-import loggers as lg
-
 from game import Game, GameState
 from model import Residual_CNN
 
@@ -31,7 +29,6 @@ class Battlesnake():
 
 
     # Set AI Constants
-    self.logger = lg.logger_main
     self.turns_until_tau0 = 10
     self.goes_first = 0
 
