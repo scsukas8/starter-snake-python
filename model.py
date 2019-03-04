@@ -4,6 +4,10 @@ import logging
 import config
 import numpy as np
 
+
+
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 from keras.models import Sequential, load_model, Model
